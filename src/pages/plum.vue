@@ -1,6 +1,6 @@
 <template>
   <div flex flex-col items-center justify-center>
-    <canvas ref="el" :width="WIDTH" :height="HEIGHT" border="~ 4 [#888] opacity-40" />
+    <canvas ref="el" :width="WIDTH" :height="HEIGHT" aspect-square w-full sm="w-[600px]" border="~ 2 [#888] opacity-40" />
     <div>
       <button class="btn m-3 text-sm mt-8" @click="generate">Generate</button>
       <button class="btn m-3 text-sm mt-8" @click="router.back()">Back</button>
@@ -31,6 +31,7 @@ interface Branch {
 
 function lineTo(p1: Point, p2: Point) {
   ctx.strokeStyle = 'rgba(128, 128, 128, 0.5)'
+  ctx.lineWidth = 2
   ctx.beginPath() // start a new path
   ctx.moveTo(p1.x, p1.y) // move the pen to (30, 50)
   ctx.lineTo(p2.x, p2.y) // draw a line to (150, 100)
@@ -69,14 +70,14 @@ function step(b: Branch, depth: number) {
   if (depth < BASE_DEPTH || Math.random() < 0.5) {
     pendingTask.push(() => step({
       startPoint: end,
-      length: 10 + LENGTH(),
+      length: 15 + LENGTH(),
       theta: b.theta - THETA(),
     }, depth + 1))
   }
   if (depth < BASE_DEPTH || Math.random() < 0.5) {
     pendingTask.push(() => step({
       startPoint: end,
-      length: 10 + LENGTH(),
+      length: 15 + LENGTH(),
       theta: b.theta + THETA(),
     }, depth + 1))
   }
@@ -101,7 +102,10 @@ function startFrame() {
 }
 
 function generate() {
-  window.history.go(0)
+  pendingTask.length = 0
+  // eslint-disable-next-line no-self-assign
+  el.height = el.height
+  init()
 }
 
 startFrame()
